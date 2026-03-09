@@ -27,7 +27,7 @@ export const ClientSchema = yup.object().shape({
 	email: yup.string().email().required('El email es requerido'),
 	phone: yup
 		.string()
-		.matches(phoneRegExp, 'No es un teléfono válido')
+		.matches(phoneRegExp, 'Formato requerido: (809) 555-1234')
 		.required('El teléfono es requerido'),
 	address: yup
 		.string()
