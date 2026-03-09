@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 import { ILogin } from 'models';
 import { LoginSchema } from 'schemas';
 import LoadingButton from 'components/common/LoadingButton';
-import bgImage from '../../../../dist/assets/images/posBg.jpg';
+import bgImage from '../../../assets/images/posBg.jpg';
 import { flushSync } from 'react-dom';
 import { Backdrop, CircularProgress } from '@mui/material';
 
