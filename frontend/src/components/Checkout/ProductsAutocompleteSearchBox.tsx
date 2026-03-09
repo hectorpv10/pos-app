@@ -1,116 +1,82 @@
 import {
-	Autocomplete,
-	AutocompleteChangeDetails,
-	AutocompleteChangeReason,
-	AutocompleteRenderInputParams,
-	TextField,
-	Typography,
+	Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason,
+	AutocompleteRenderInputParams, TextField, Typography,
 } from '@mui/material';
-import { FunctionComponent, useEffect, useState } from 'react';
-import {
-	UseSearchBoxProps,
-	useInfiniteHits,
-	useSearchBox,
-} from 'react-instantsearch-hooks';
-
+import { FunctionComponent, useState } from 'react';
 import { Box } from '@mui/system';
 import { addToCart } from 'store/checkout/checkout.slice';
 import { useAppDispatch } from 'store/hooks';
-import useDebounce from 'hooks/useDebounce';
 import { useSelector } from 'react-redux';
 import { mapCartState } from 'store/checkout/checkout.selectors';
+import { useCollectionFromDB } from 'hooks/firebase';
+import { where } from 'firebase/firestore';
+import { IProduct } from 'models';
+import { formatToCurrency } from 'utils';
 
-interface ProductsAutocompleteSearchBoxProps extends UseSearchBoxProps {
-	placeholder?: string;
-	className?: string;
-}
-
-const ProductsAutocompleteSearchBox: FunctionComponent<
-	ProductsAutocompleteSearchBoxProps
-> = (props) => {
-	const { query, refine, isSearchStalled } = useSearchBox(props);
-	const { hits } = useInfiniteHits();
+const ProductsAutocompleteSearchBox: FunctionComponent = () => {
+	const allProducts = useCollectionFromDB('products', [where('deleted', '==', false)]) as IProduct[];
 	const { cartProducts } = useSelector(mapCartState);
-
-	const [sortedHits, setSortedHits] = useState<null | typeof hits>(null);
-	const [inputValue, setInputValue] = useState<null | string>(query || '');
+	const [inputValue, setInputValue] = useState('');
 	const [selectedProduct, setSelectedProduct] = useState<any>(null);
-	const debouncedValue = useDebounce(inputValue);
-
 	const dispatch = useAppDispatch();
+
+	const filtered = allProducts
+		.filter(p => p.name?.toLowerCase().includes(inputValue.toLowerCase()) ||
+			p.category?.toLowerCase().includes(inputValue.toLowerCase()))
+		.sort((a, b) => {
+			const aTime = (a.createdAt as any)?.seconds ?? 0;
+			const bTime = (b.createdAt as any)?.seconds ?? 0;
+			return bTime - aTime;
+		});
 
 	const handleChange = (
 		event: React.SyntheticEvent<Element, Event>,
 		value: any | null,
 		reason: AutocompleteChangeReason,
-		details?: AutocompleteChangeDetails<any> | undefined
 	) => {
-		if (
-			event.type === 'keydown' &&
-			(event as React.KeyboardEvent).key === 'Backspace' &&
-			reason === 'removeOption'
-		) {
-			return;
-		}
-		dispatch(addToCart(value));
+		if (event.type === 'keydown' && (event as React.KeyboardEvent).key === 'Backspace' && reason === 'removeOption') return;
+		if (value) dispatch(addToCart({ ...value, objectID: value.id }));
 		setInputValue('');
 		setSelectedProduct(null);
 	};
-
-	useEffect(() => {
-		if (query !== debouncedValue) {
-			refine(debouncedValue || '');
-		}
-	}, [debouncedValue, refine]);
-
-	useEffect(() => {
-		setSortedHits(
-			hits.sort((a, b) =>
-				(a.category as string).localeCompare(b.category as string)
-			)
-		);
-	}, [hits]);
-
-	useEffect(() => {
-		if (cartProducts.length === 0) {
-			setInputValue('');
-			setSelectedProduct(null);
-		}
-	}, [cartProducts]);
 
 	return (
 		<Autocomplete
 			fullWidth
 			clearOnBlur
 			clearOnEscape
-			filterOptions={(x) => x}
+			filterOptions={x => x}
 			size='small'
 			value={selectedProduct}
-			inputValue={inputValue || ''}
-			noOptionsText='No products found'
-			onInputChange={(event, value, reason) => {
-				setInputValue(value);
-			}}
+			inputValue={inputValue}
+			noOptionsText='No se encontraron productos'
+			onInputChange={(_, value) => setInputValue(value)}
 			onChange={handleChange}
-			options={sortedHits || []}
-			groupBy={(option) => option.category}
-			renderOption={(props, option, { selected }) => (
-				<li {...props}>
-					<Box>
-						<Box>
-							<Typography>{option.name}</Typography>
-						</Box>
+			options={filtered}
+			groupBy={option => option.category}
+			getOptionLabel={option => option.name}
+			renderOption={(props, option) => (
+				<li {...props} key={option.id}>
+					<Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+						<Typography sx={{ fontSize: '14px' }}>{option.name}</Typography>
+						<Typography sx={{ fontSize: '13px', fontWeight: 700, color: '#1a237e' }}>
+							{formatToCurrency(option.price)}
+						</Typography>
 					</Box>
 				</li>
 			)}
-			getOptionLabel={(option) => option.name}
 			renderInput={(params: AutocompleteRenderInputParams) => (
 				<TextField
 					{...params}
-					inputProps={{
-						...params.inputProps,
-					}}
 					label='Producto'
+					sx={{
+						'& .MuiOutlinedInput-root': {
+							borderRadius: '10px',
+							'&:hover fieldset': { borderColor: '#1a237e' },
+							'&.Mui-focused fieldset': { borderColor: '#1a237e' },
+						},
+						'& .MuiInputLabel-root.Mui-focused': { color: '#1a237e' },
+					}}
 				/>
 			)}
 		/>
@@ -118,4 +84,3 @@ const ProductsAutocompleteSearchBox: FunctionComponent<
 };
 
 export default ProductsAutocompleteSearchBox;
-
