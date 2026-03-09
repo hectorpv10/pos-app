@@ -35,7 +35,7 @@ El objetivo principal del sistema es desarrollar una aplicación web tipo POS (P
 ### Formularios & Validación
 - [`Formik`](https://formik.org/docs/overview)
 - [`yup`](https://www.npmjs.com/package/yup)
-### Utilidades: Notificacione, manejo de fechas, generación IDs unicos, procesador CSS
+### Utilidades: Notificaciones, Manejo de Fechas, Generación IDs Unicos, Procesador CSS
 - [`react-toastify`](https://formik.org/docs/overview)
 - [`dayjs`](https://www.npmjs.com/package/dayjs)
 - [`uuid`](https://www.npmjs.com/package/uuid)
