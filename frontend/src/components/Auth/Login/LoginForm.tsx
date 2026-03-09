@@ -66,7 +66,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({ onSubmit }) => {
 			initialValues={{ email: '', password: '' }}
 			onSubmit={async (values) => {
 				flushSync(() => setLoading(true));
-				await new Promise(resolve => setTimeout(resolve, 5000));
+				await new Promise(resolve => setTimeout(resolve, 2000));
 				try {
 					await onSubmit(values);
 				} catch (e) {

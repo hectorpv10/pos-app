@@ -124,7 +124,7 @@ const UserMenu: React.FunctionComponent = () => {
 				<Divider />
 
 				{/* Ver perfil */}
-				<MenuItem
+				{/* <MenuItem
 					onClick={handleClose}
 					component='a'
 					href={`/users/${user?.uid}/edit`}
@@ -140,7 +140,7 @@ const UserMenu: React.FunctionComponent = () => {
 						<span style={{ fontSize: '18px' }}>👤</span>
 					</ListItemIcon>
 					Ver perfil
-				</MenuItem>
+				</MenuItem> */}
 
 				<Divider />
 

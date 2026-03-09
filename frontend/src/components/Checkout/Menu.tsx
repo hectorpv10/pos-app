@@ -1,40 +1,39 @@
-import * as React from 'react';
-
-import { Box, Button, Grid } from '@mui/material';
-
+import { Box, Typography } from '@mui/material';
 import PayWithCard from './PayWithCard';
 import PayWithCash from './PayWithCash';
 import BarcodeScanner from './BarcodeScanner';
 
-interface MenuProps { }
-
-const Menu: React.FunctionComponent<MenuProps> = () => {
+const Menu: React.FunctionComponent = () => {
 	return (
-		<Box
-			sx={{
-				display: 'flex',
-				flexDirection: 'column',
-				justifyContent: 'flex-end',
-				height: '100%',
+		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+			{/* Scanner */}
+			<Box sx={{
+				background: '#fff', borderRadius: '16px',
+				p: 2, boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
 			}}>
-			<Grid container sx={{ justifyContent: 'space-between' }}>
-				<Grid item xs={12}>
-					<BarcodeScanner />
-				</Grid>
-				<Grid
-					item
-					sx={{
-						display: 'flex',
-						width: '100%',
-					}}>
-					<Box sx={{ width: '50%' }}>
+				<Typography sx={{ fontWeight: 700, fontSize: '15px', color: '#1a1a2e', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+					<span style={{ fontSize: '18px' }}>📷</span> Escáner
+				</Typography>
+				<BarcodeScanner />
+			</Box>
+
+			{/* Métodos de pago */}
+			<Box sx={{
+				background: '#fff', borderRadius: '16px',
+				p: 2, boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
+			}}>
+				<Typography sx={{ fontWeight: 700, fontSize: '15px', color: '#1a1a2e', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+					<span style={{ fontSize: '18px' }}>💳</span> Método de pago
+				</Typography>
+				<Box sx={{ display: 'flex', gap: 2 }}>
+					<Box sx={{ flex: 1 }}>
 						<PayWithCash />
 					</Box>
-					<Box sx={{ width: '50%' }} ml={2}>
+					<Box sx={{ flex: 1 }}>
 						<PayWithCard />
 					</Box>
-				</Grid>
-			</Grid>
+				</Box>
+			</Box>
 		</Box>
 	);
 };

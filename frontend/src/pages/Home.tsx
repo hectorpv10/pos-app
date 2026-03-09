@@ -223,38 +223,85 @@ export default function Home({}: Props) {
 
 				{/* Órdenes recientes */}
 				<Grid item xs={12}>
-					<SectionTable title="Órdenes recientes" icon="🧾" color="#fff3e0">
-						{recentOrders.length === 0 ? (
-							<div style={{ padding: '24px', textAlign: 'center', color: '#aaa' }}>Sin órdenes</div>
-						) : recentOrders.map((o, i) => (
-							<div key={o.id || i} style={{
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'space-between',
-								padding: '12px 24px',
-								borderBottom: i < recentOrders.length - 1 ? '1px solid #f5f5f5' : 'none',
-							}}>
-								<div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-									<div style={{
-										width: '38px', height: '38px', borderRadius: '10px',
-										background: '#fff3e0', display: 'flex',
-										alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-									}}>🧾</div>
-									<div>
-										<div style={{ fontWeight: 600, color: '#1a1a2e', fontSize: '14px' }}>
-											{o.payment === 'cash' ? 'Efectivo' : 'Tarjeta'}
-										</div>
-										<div style={{ color: '#888', fontSize: '12px' }}>
-											{o.products?.length || 0} producto(s)
-										</div>
+				<SectionTable title="Órdenes recientes" icon="🧾" color="#fff3e0">
+					{recentOrders.length === 0 ? (
+						<div style={{ padding: '24px', textAlign: 'center', color: '#aaa' }}>Sin órdenes</div>
+					) : recentOrders.map((o, i) => (
+						<div key={o.id || i} style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'space-between',
+							padding: '12px 24px',
+							borderBottom: i < recentOrders.length - 1 ? '1px solid #f5f5f5' : 'none',
+						}}>
+							{/* Icono + método */}
+							<div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '140px' }}>
+								<div style={{
+									width: '38px', height: '38px', borderRadius: '10px',
+									background: o.payment === 'cash' ? '#e8f5e9' : '#e3f2fd',
+									display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px',
+								}}>
+									{o.payment === 'cash' ? '💵' : '💳'}
+								</div>
+								<div>
+									<div style={{ fontWeight: 600, color: '#1a1a2e', fontSize: '14px' }}>
+										{o.payment === 'cash' ? 'Efectivo' : 'Tarjeta'}
+									</div>
+									<div style={{ color: '#888', fontSize: '12px' }}>
+										{o.products?.length || 0} producto(s)
 									</div>
 								</div>
+							</div>
+
+							{/* Cliente */}
+							<div style={{ flex: 1, padding: '0 16px' }}>
+								<div style={{ fontSize: '12px', color: '#aaa' }}>Cliente</div>
+								<div style={{ fontSize: '13px', color: '#555', fontWeight: 500 }}>
+									{o.clientEmail && o.clientEmail !== 'anonymous' ? o.clientEmail : 'Anónimo'}
+								</div>
+							</div>
+
+							{/* Productos */}
+							<div style={{ flex: 1, padding: '0 16px' }}>
+								<div style={{ fontSize: '12px', color: '#aaa' }}>Productos</div>
+								<div style={{ fontSize: '12px', color: '#555' }}>
+									{o.products?.slice(0, 2).map((p: any, pi: number) => (
+										<span key={pi}>{p.count}x {p.name}{pi < Math.min(o.products.length, 2) - 1 ? ', ' : ''}</span>
+									))}
+									{o.products?.length > 2 && <span style={{ color: '#aaa' }}> +{o.products.length - 2} más</span>}
+								</div>
+							</div>
+
+							{/* Subtotal + ITBIS */}
+							<div style={{ textAlign: 'right', padding: '0 16px' }}>
+								<div style={{ fontSize: '12px', color: '#aaa' }}>Subtotal / ITBIS</div>
+								<div style={{ fontSize: '12px', color: '#555' }}>
+									{formatToCurrency(o.subTotal)} / {formatToCurrency(o.taxes)}
+								</div>
+							</div>
+
+							{/* Total */}
+							<div style={{ textAlign: 'right', minWidth: '100px' }}>
+								<div style={{ fontSize: '12px', color: '#aaa' }}>Total</div>
 								<div style={{ fontWeight: 700, color: '#2e7d32', fontSize: '16px' }}>
 									{formatToCurrency(o.total)}
 								</div>
 							</div>
-						))}
-					</SectionTable>
+
+							{/* Fecha */}
+							<div style={{ textAlign: 'right', minWidth: '90px', paddingLeft: '16px' }}>
+								<div style={{ fontSize: '12px', color: '#aaa' }}>Fecha</div>
+								<div style={{ fontSize: '12px', color: '#888' }}>
+									{(o.createdAt as any)?.seconds
+										? new Date((o.createdAt as any).seconds * 1000).toLocaleDateString('es-DO', {
+											day: '2-digit', month: 'short', year: 'numeric',
+										})
+										: '—'}
+								</div>
+							</div>
+						</div>
+					))}
+				</SectionTable>
 				</Grid>
 			</Grid>
 		</div>

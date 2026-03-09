@@ -52,6 +52,7 @@ export interface IOrder {
 	products: IProduct[];
 	userID: string;
 	clientID: string;
+	clientEmail?: string;
 	taxes: number;
 	subTotal: number;
 	total: number;
