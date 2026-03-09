@@ -20,12 +20,26 @@ Como framework de estilos se empleó Material UI (MUI), realizando algunas adapt
 El objetivo principal del sistema es desarrollar una aplicación web tipo POS (Point of Sale) que permita la gestión de productos, clientes y usuarios, así como el registro de operaciones de venta, proporcionando una solución centralizada, segura y fácil de usar. El sistema está diseñado para optimizar los procesos administrativos y operativos, facilitando el control de la información y mejorando la eficiencia en la toma de decisiones.
 
 ## Requerimientos
-
 - [NodeJS](https://nodejs.org/en/)
 - [`yarn`](https://yarnpkg.com) o `npm` (incluido con NodeJS)
-
+- [`REACT`](https://react.dev/)
+### UI & Estilos
+- [`MaterialUI`](https://mui.com/material-ui/getting-started/)
+- [`Material Icons`](https://mui.com/material-ui/material-icons/)
+- [`FountSource`](https://fontsource.org/fonts/roboto)
+### Firebase & Backend 
+- [`FIREBASE`](https://console.firebase.google.com/)
+- [`ReachRouter`](https://www.npmjs.com/package/@reach/router)
+### Estados
+- [`Redux`](https://www.npmjs.com/package/react-redux)
+### Formularios & Validación
+- [`Formik`](https://formik.org/docs/overview)
+- [`yup`](https://www.npmjs.com/package/yup)
+### Utilidades: Notificacione, manejo de fechas, generación IDs unicos, procesador CSS
+- [`react-toastify`](https://formik.org/docs/overview)
+- [`dayjs`](https://www.npmjs.com/package/dayjs)
+- [`uuid`](https://www.npmjs.com/package/uuid)
 ## Instalación
-
 - `yarn` o `npm install`
 - `yarn dev` o `npm run dev`
 - Abrir `localhost:3000`
