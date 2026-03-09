@@ -1,4 +1,5 @@
-import { Box, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip } from '@mui/material';
+import { useState } from 'react';
+import { Box, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Pagination } from '@mui/material';
 import Menu from './Menu';
 import Order from './Order';
 import ProductsInstantSearch from 'components/Products/ProductsInstantSearch';
@@ -8,10 +9,15 @@ import { formatToCurrency } from 'utils';
 
 export default function Checkout() {
 	const recentOrders = useCollectionFromDB('orders') as (IOrder & { id: string })[];
+	const [page, setPage] = useState(1);
+	const perPage = 10;
 
 	const sorted = [...recentOrders].sort((a, b) =>
 		((b.createdAt as any)?.seconds ?? 0) - ((a.createdAt as any)?.seconds ?? 0)
-	).slice(0, 20);
+	);
+
+	const totalPages = Math.ceil(sorted.length / perPage);
+	const paginated = sorted.slice((page - 1) * perPage, page * perPage);
 
 	return (
 		<Box sx={{ minHeight: '100vh', background: '#f4f6fb', p: 3 }}>
@@ -28,15 +34,20 @@ export default function Checkout() {
 
 			{/* Órdenes recientes */}
 			<Box sx={{ mt: 4 }}>
-				<Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#1a1a2e', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-					<span>🧾</span> Órdenes recientes
-				</Typography>
+				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+					<Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 1 }}>
+						<span>🧾</span> Órdenes recientes
+					</Typography>
+					<Typography sx={{ fontSize: '14px', color: '#888' }}>
+						{sorted.length} órdenes en total
+					</Typography>
+				</Box>
 
 				<TableContainer sx={{ borderRadius: '16px', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', overflow: 'hidden' }}>
 					<Table>
 						<TableHead>
 							<TableRow sx={{ background: 'linear-gradient(135deg, #1a237e, #283593)' }}>
-								{['ID', 'Email', 'Productos', 'Subtotal', 'ITBIS', 'Total', 'Pago', 'Estado', 'Fecha'].map(col => (
+								{['# ID', 'Email de Cliente', 'Productos', 'Subtotal', 'ITBIS', 'Total', 'Pago', 'Estado', 'Fecha'].map(col => (
 									<TableCell key={col} sx={{ color: '#fff', fontWeight: 700, fontSize: '13px', borderBottom: 'none', whiteSpace: 'nowrap' }}>
 										{col}
 									</TableCell>
@@ -44,27 +55,26 @@ export default function Checkout() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{sorted.length === 0 ? (
+							{paginated.length === 0 ? (
 								<TableRow>
-									<TableCell colSpan={8} sx={{ textAlign: 'center', py: 6, color: '#aaa', fontSize: '14px' }}>
+									<TableCell colSpan={9} sx={{ textAlign: 'center', py: 6, color: '#aaa', fontSize: '14px' }}>
 										No hay órdenes registradas
 									</TableCell>
 								</TableRow>
-							) : sorted.map((order, i) => (
+							) : paginated.map((order, i) => (
 								<TableRow key={order.id} sx={{
 									background: i % 2 === 0 ? '#fff' : '#fafbfd',
 									'&:hover': { background: '#f0f4ff' },
 									transition: 'background 0.15s',
 								}}>
-									<TableCell sx={{ fontSize: '12px', color: '#aaa', borderBottom: '1px solid #f0f0f0', fontFamily: 'monospace', cursor: 'default' }} title={order.id}>
+									<TableCell sx={{ fontSize: '12px', color: '#aaa', borderBottom: '1px solid #f0f0f0', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
 										{order.id}
 									</TableCell>
-
-									<TableCell sx={{ borderBottom: '1px solid #f0f0f0' }}>
-
-										{order.clientEmail}
+									<TableCell sx={{ fontSize: '13px', color: '#555', borderBottom: '1px solid #f0f0f0' }}>
+										{(order as any).clientEmail && (order as any).clientEmail !== 'anonymous'
+											? (order as any).clientEmail
+											: 'Anónimo'}
 									</TableCell>
-
 									<TableCell sx={{ borderBottom: '1px solid #f0f0f0' }}>
 										<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3 }}>
 											{order.products?.slice(0, 2).map((p, pi) => (
@@ -122,6 +132,21 @@ export default function Checkout() {
 						</TableBody>
 					</Table>
 				</TableContainer>
+
+				{totalPages > 1 && (
+					<Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+						<Pagination
+							count={totalPages}
+							page={page}
+							onChange={(_, v) => setPage(v)}
+							size='large'
+							sx={{
+								'& .MuiPaginationItem-root': { borderRadius: '8px' },
+								'& .Mui-selected': { background: '#1a237e !important', color: '#fff' },
+							}}
+						/>
+					</Box>
+				)}
 			</Box>
 		</Box>
 	);

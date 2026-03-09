@@ -107,8 +107,13 @@ export default function Home({}: Props) {
 	const allOrders = useCollectionFromDB('orders');
 
 	const totalRevenue = allOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-	const recentClients = [...allClients].slice(0, 5);
-	const recentProducts = [...allProducts].slice(0, 5);
+	const recentClients = [...allClients]
+		.sort((a, b) => ((b.createdAt as any)?.seconds ?? 0) - ((a.createdAt as any)?.seconds ?? 0))
+		.slice(0, 5);
+
+	const recentProducts = [...allProducts]
+		.sort((a, b) => ((b.createdAt as any)?.seconds ?? 0) - ((a.createdAt as any)?.seconds ?? 0))
+		.slice(0, 5);
 	const recentOrders = [...allOrders].sort((a, b) =>
 		(b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
 	).slice(0, 5);
