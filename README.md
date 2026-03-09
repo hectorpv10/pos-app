@@ -1,6 +1,6 @@
 # POS App
 
-Proyecto publiacado en `https://pos-app-7c658.web.app/`
+Proyecto publicado en `https://pos-app-7c658.web.app/`
 
 Para acceder al proyecto pueden usar las siguientes credenciales:
 
