@@ -103,6 +103,7 @@ export default function EditProduct({ id }: Props) {
 						try {
 							await updateDoc(doc(db, 'products', id), formatProduct(values));
 							toast.success('Producto actualizado correctamente');
+							setTimeout(() => window.location.href = '/products', 1000);
 						} catch (e) {
 							toast.error('Error guardando el producto');
 						} finally {

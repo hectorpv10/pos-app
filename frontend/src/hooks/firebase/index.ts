@@ -52,37 +52,27 @@ export const useDB = () => {
 export const useCollectionFromDB = (
 	collectionName: string,
 	filters: QueryConstraint[] = []
-) => {
-	const [data, setData] = useState<FixMeLater[]>([]);
-	const db = useFirestore();
+    ) => {
+			const [data, setData] = useState<FixMeLater[]>([]);
+			const db = useFirestore();
 
-	const getDataFromDB = async () => {
-		const q = query(collection(db, collectionName), ...filters);
-		const querySnapshot = await getDocs(q);
-		const result: FixMeLater[] = [];
-		querySnapshot.forEach((doc) => {
-			result.push({ ...doc.data(), id: doc.id });
-		});
-		setData(result);
-	};
+			useEffect(() => {
+				const colRef = collection(db, collectionName);
+				const q = query(colRef, ...filters);
 
-	useEffect(() => {
-		const colRef = collection(db, collectionName);
-		const q = query(colRef, ...filters);
+				const unsubscribe = onSnapshot(q, (snapshot) => {
+					const result: FixMeLater[] = [];
+					snapshot.forEach((doc) => {
+						result.push({ ...doc.data(), id: doc.id });
+					});
+					setData(result);
+				});
 
-		const unsubscribe = onSnapshot(q, (snapshot) => {
-			const result: FixMeLater[] = [];
-			snapshot.forEach((doc) => {
-				result.push({ ...doc.data(), id: doc.id });
-			});
-			setData(result);
-		});
-
-		return () => {
-			unsubscribe();
-			setData([]);
-		};
-	}, [collectionName]);
+			return () => {
+					unsubscribe();
+					setData([]);
+				};
+			}, [collectionName]);
 
 	return data;
 };

@@ -33,6 +33,7 @@ export default function AddProduct() {
 			);
 			resetForm();
 			toast.success('Producto guardado correctamente');
+			setTimeout(() => window.location.href = '/products', 1000);
 		} catch (e) {
 			toast.error('Error guardando el producto');
 		} finally {

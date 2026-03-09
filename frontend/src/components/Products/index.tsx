@@ -22,6 +22,7 @@ export default function Products() {
 	const [productId, setProductId] = useState('');
 	const [page, setPage] = useState(1);
 	const perPage = 12;
+	const [categorySearch, setCategorySearch] = useState('');
 
 	const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
 
@@ -76,7 +77,8 @@ export default function Products() {
 		background: '#fff',
 		'& fieldset': { borderColor: '#e0e0e0' },
 		'&:hover fieldset': { borderColor: '#1a237e' },
-		'&.Mui-focused fieldset': { borderColor: '#1a237e' },
+		'&.Mui-focused fieldset': { borderColor: '#1a237e !important' },
+		'& .MuiSelect-select:focus': { background: 'transparent' },
 	};
 
 	return (
@@ -142,21 +144,48 @@ export default function Products() {
 					}}
 				/>
 
-				<FormControl sx={{ minWidth: 160 }}>
+					<FormControl sx={{ minWidth: 160, '& .MuiInputLabel-root.Mui-focused': { color: '#1a237e' } }}>
 					<InputLabel>Categoría</InputLabel>
 					<Select
 						value={filterCategory}
 						label='Categoría'
 						onChange={e => { setFilterCategory(e.target.value); setPage(1); }}
-						sx={selectStyle}>
+						sx={selectStyle}
+						MenuProps={{
+							autoFocus: false,
+							PaperProps: {
+								sx: { maxHeight: 300, borderRadius: '12px' }
+							}
+						}}>
+						<Box sx={{ px: 1, pb: 1, position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
+							<TextField
+								size='small'
+								placeholder='Buscar categoría...'
+								autoFocus
+								onKeyDown={e => e.stopPropagation()}
+								onChange={e => setCategorySearch(e.target.value)}
+								value={categorySearch}
+								sx={{
+									width: '100%',
+									'& .MuiOutlinedInput-root': {
+										borderRadius: '8px',
+										'&:hover fieldset': { borderColor: '#1a237e' },
+										'&.Mui-focused fieldset': { borderColor: '#1a237e' },
+									},
+								}}
+							/>
+						</Box>
 						<MenuItem value=''>Todas</MenuItem>
-						{categories.map(c => (
-							<MenuItem key={c} value={c}>{c}</MenuItem>
-						))}
+						{categories
+							.filter(c => c.toLowerCase().includes(categorySearch.toLowerCase()))
+							.map(c => (
+								<MenuItem key={c} value={c}>{c}</MenuItem>
+							))
+						}
 					</Select>
 				</FormControl>
 
-				<FormControl sx={{ minWidth: 200 }}>
+				<FormControl sx={{ minWidth: 200, '& .MuiInputLabel-root.Mui-focused': { color: '#1a237e' } }}>
 					<InputLabel>Ordenar por</InputLabel>
 					<Select
 						value={sortBy}
