@@ -1,0 +1,11 @@
+
+.text-truncate {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+div.checkout-wrapper {
+	height: calc(100vh - 72px);
+	overflow: hidden;
+}

@@ -1,0 +1,11 @@
+firebase/service-key.json
+.DS_Store
+cat .gitignore
+```
+Si no tiene estas entradas agrégalas:
+```
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
