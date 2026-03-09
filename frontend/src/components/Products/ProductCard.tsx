@@ -58,7 +58,7 @@ export default function ProductCard({ hit, handleDelete }: Props) {
 			<Box sx={{ p: 2, flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
 				    {/* Nombre */}
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-					<Typography sx={{ fontSize: '16px', color: '#1a1a2e', flexShrink: 0 }}>Nombre:</Typography>
+					<Typography sx={{ fontSize: '16px', color: '#1a1a2e', flexShrink: 0 }}>Descripción:</Typography>
 					<Typography 
 					title={hit?.name}
 					sx={{
@@ -73,8 +73,8 @@ export default function ProductCard({ hit, handleDelete }: Props) {
 						{hit?.name}
 					</Typography>
 				</Box>
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-					<Typography sx={{ fontSize: '16px', color: '#1a1a2e', flexShrink: 0 }}>Descripción:</Typography>
+				{/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+					<Typography sx={{ fontSize: '16px', color: '#1a1a2e', flexShrink: 0 }}>Categoría:</Typography>
 					<Typography sx={{
 						fontSize: '16px',
 						color: '#1a1a2e',
@@ -84,21 +84,32 @@ export default function ProductCard({ hit, handleDelete }: Props) {
 					}}>
 						{hit?.category}
 					</Typography>
-				</Box>
+				</Box> */}
 
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3 }}>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-						<Typography sx={{ fontSize: '12px', color: '#888', flexShrink: 0 }}>Sin ITBIS:</Typography>
-						<Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#1a237e' }}>
-							{formatToCurrency(hit?.price)}
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+						<Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#1a1a2e' }}>
+							{formatToCurrency(hit?.priceWithTax || Number((hit?.price * 1.18).toFixed(2)))}
+						</Typography>
+						<Typography sx={{
+							fontSize: '11px',
+							fontWeight: 600,
+							color: '#fff',
+							background: '#1a237e',
+							borderRadius: '6px',
+							px: 0.8,
+							py: 0.2,
+						}}>
+							Incluye ITBIS
 						</Typography>
 					</Box>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-						<Typography sx={{ fontSize: '12px', color: '#888', flexShrink: 0 }}>Con ITBIS:</Typography>
-						<Typography sx={{ fontSize: '14px', fontWeight: 700, color: '#283593' }}>
-							{formatToCurrency(hit?.priceWithTax || hit?.price * 1.18)}
-						</Typography>
-					</Box>
+					<Typography sx={{
+						fontSize: '13px',
+						color: '#aaa',
+						textDecoration: 'line-through',
+					}}>
+						{formatToCurrency(hit?.price)}
+					</Typography>
 				</Box>
 
 				{hit?.code && (

@@ -10,6 +10,9 @@ import { formatProduct } from 'utils';
 import { toast } from 'react-toastify';
 import { useFirestore } from 'reactfire';
 import BarcodeScanner from './BarcodeScanner';
+import { Autocomplete } from '@mui/material';
+import { useCollectionFromDB } from 'hooks/firebase';
+import { where } from 'firebase/firestore';
 
 export default function AddProduct() {
 	const db = useFirestore();
@@ -40,7 +43,8 @@ export default function AddProduct() {
 			setLoading(false);
 		}
 	};
-
+		const allProducts = useCollectionFromDB('products', [where('deleted', '==', false)]) as IProduct[];
+		const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
 	return (
 		<Box sx={{
 			minHeight: '100vh',
@@ -127,18 +131,27 @@ export default function AddProduct() {
 										variant='outlined'
 										sx={fieldStyle}
 									/>
-									<TextField
-										fullWidth
-										name='category'
-										label='Categoría'
-										value={values.category}
-										onChange={handleChange}
-										onBlur={handleBlur}
-										error={touched.category && Boolean(errors.category)}
-										helperText={touched.category && errors.category}
-										variant='outlined'
-										sx={fieldStyle}
-									/>
+							<Autocomplete
+									freeSolo
+									options={categories}
+									value={values.category}
+									onInputChange={(_, newValue) => {
+										handleChange({ target: { name: 'category', value: newValue } } as any);
+									}}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											fullWidth
+											name='category'
+											label='Categoría'
+											onBlur={handleBlur}
+											error={touched.category && Boolean(errors.category)}
+											helperText={touched.category && errors.category}
+											variant='outlined'
+											sx={fieldStyle}
+										/>
+									)}
+								/>
 									<TextField
 										fullWidth
 										name='price'
